@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 인앱 로고: 레드 원형 배지 + 흰색 전원 심볼 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 레드 배지 -->
+    <path
+        android:fillColor="#D32F2F"
+        android:pathData="M14,54 A40,40 0 1,0 94,54 A40,40 0 1,0 14,54" />
+    <!-- 흰색 링 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M34,58 A20,20 0 1,0 74,58 A20,20 0 1,0 34,58"
+        android:strokeWidth="7"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+    <!-- 링 틈 (배지색으로 지우기) -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,30 L54,46"
+        android:strokeWidth="10"
+        android:strokeColor="#D32F2F"
+        android:strokeLineCap="butt" />
+    <!-- 전원 다리 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,40 L54,60"
+        android:strokeWidth="7"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,11 @@
+<resources>
+    <!-- 브랜드 -->
+    <color name="brand_red">#D32F2F</color>
+    <color name="brand_red_dark">#B71C1C</color>
+    <color name="brand_accent">#FF5252</color>
+    <color name="brand_red_soft">#FDECEA</color>
+    <!-- 런처 아이콘 배경 -->
+    <color name="ic_launcher_background">#D32F2F</color>
+    <!-- 차단 화면 -->
+    <color name="blocked_bg">#B71C1C</color>
+</resources>
