@@ -64,6 +64,12 @@
             android:layout_weight="1"
             android:text="로그아웃" />
     </LinearLayout>
+    <Button
+        android:id="@+id/btnQuick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="⚡ 즉시 차단 (Quick Block)" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSchedules"
         android:layout_width="match_parent"

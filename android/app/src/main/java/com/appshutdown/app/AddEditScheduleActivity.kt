@@ -1,7 +1,10 @@
 package com.appshutdown.app
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +14,18 @@ import kotlinx.coroutines.withContext
 class AddEditScheduleActivity : AppCompatActivity() {
 
     private var editId: String? = null
+
+    private val pickApps = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+        if (res.resultCode == Activity.RESULT_OK) {
+            val picked = res.data?.getStringArrayListExtra("picked") ?: return@registerForActivityResult
+            val etApps: EditText = findViewById(R.id.etApps)
+            val cur = etApps.text.toString()
+                .split(",", "\n", " ", ";")
+                .map { it.trim() }.filter { it.isNotEmpty() }.toMutableSet()
+            cur.addAll(picked)
+            etApps.setText(cur.joinToString("\n"))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +43,16 @@ class AddEditScheduleActivity : AppCompatActivity() {
         val switchActive: Switch = findViewById(R.id.switchActive)
         val switchAllow: Switch = findViewById(R.id.switchAllowlist)
         val btnSave: Button = findViewById(R.id.btnSave)
+        val btnPickApps: Button = findViewById(R.id.btnPickApps)
+        btnPickApps.setOnClickListener {
+            val cur = etApps.text.toString()
+                .split(",", "\n", " ", ";")
+                .map { it.trim() }.filter { it.isNotEmpty() }
+            pickApps.launch(
+                Intent(this, AppPickerActivity::class.java)
+                    .putStringArrayListExtra("selected", ArrayList(cur))
+            )
+        }
         val tvError: TextView = findViewById(R.id.tvError)
 
         val types = arrayOf("TIME_WINDOW", "DAILY_LIMIT", "ALWAYS", "QUICK")

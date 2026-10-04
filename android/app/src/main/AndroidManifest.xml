@@ -31,6 +31,7 @@
         <activity android:name=".SignupActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".AddEditScheduleActivity" android:exported="false" />
+        <activity android:name=".AppPickerActivity" android:exported="false" />
         <activity
             android:name=".BlockedScreenActivity"
             android:exported="false"

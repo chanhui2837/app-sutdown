@@ -1,5 +1,6 @@
 package com.appshutdown.app
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +22,45 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: ScheduleAdapter
     private var schedules: List<Schedule> = emptyList()
+
+    // Quick Block: 앱 고르기 → 즉시 차단 일정 생성
+    private val quickPick = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+        if (res.resultCode == Activity.RESULT_OK) {
+            val picked = res.data?.getStringArrayListExtra("picked") ?: return@registerForActivityResult
+            if (picked.isEmpty()) {
+                Toast.makeText(this, "앱을 1개 이상 고르세요", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
+            createQuickBlock(picked)
+        }
+    }
+
+    private fun createQuickBlock(pkgs: List<String>) {
+        val tvStatus: TextView = findViewById(R.id.tvStatus)
+        tvStatus.text = "즉시 차단 시작 중..."
+        lifecycleScope.launch {
+            try {
+                val body = mapOf<String, Any>(
+                    "name" to "⚡ 즉시 차단",
+                    "type" to "QUICK",
+                    "blockedApps" to pkgs,
+                    "isActive" to true,
+                    "strictMode" to true
+                )
+                val res = withContext(Dispatchers.IO) {
+                    ApiClient.get(this@MainActivity).createSchedule(body)
+                }
+                if (res.isSuccessful) {
+                    Toast.makeText(this@MainActivity, "즉시 차단 시작!", Toast.LENGTH_SHORT).show()
+                    load(tvStatus)
+                } else {
+                    tvStatus.text = "즉시 차단 실패 (${res.code()})"
+                }
+            } catch (e: Exception) {
+                tvStatus.text = "서버 접속 실패: ${e.message}"
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         val btnRefresh: Button = findViewById(R.id.btnRefresh)
         val btnPerm: Button = findViewById(R.id.btnPerm)
         val btnLogout: Button = findViewById(R.id.btnLogout)
+        val btnQuick: Button = findViewById(R.id.btnQuick)
 
         adapter = ScheduleAdapter(
             onToggle = { s -> toggle(s) },
@@ -56,6 +98,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, AddEditScheduleActivity::class.java))
         }
         btnRefresh.setOnClickListener { load(tvStatus) }
+        btnQuick.setOnClickListener {
+            quickPick.launch(
+                Intent(this, AppPickerActivity::class.java)
+                    .putStringArrayListExtra("selected", ArrayList(emptyList<String>()))
+            )
+        }
         btnPerm.setOnClickListener { openPermissions() }
         btnLogout.setOnClickListener {
             AuthManager.logout(this)
@@ -244,7 +292,7 @@ class MainActivity : AppCompatActivity() {
                 if (s.blockedApps.size > 3) " 외 ${s.blockedApps.size - 3}개" else ""
             val mode = if (s.allowlistMode) "[허용목록외 전부차단] " else ""
             return when (s.type) {
-                "DAILY_LIMIT" -> "$mode하루 ${s.dailyLimitMinutes}분 쓰면 차단 | $apps"
+                "DAILY_LIMIT" -> "${mode}하루 ${s.dailyLimitMinutes}분 쓰면 차단 | $apps"
                 "TIME_WINDOW" -> {
                     val d = if (s.days.isEmpty()) "매일" else "요일:" + s.days.sorted().joinToString(",")
                     "$mode${s.startTime}~${s.endTime} ($d) | $apps"

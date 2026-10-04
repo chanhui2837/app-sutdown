@@ -27,6 +27,11 @@
             android:gravity="top"
             android:hint="차단 앱 패키지명 (줄바꿈/콤마 구분)&#10;예:&#10;com.instagram.android&#10;com.google.android.youtube&#10;com.zhiliaoapp.musically"
             android:inputType="textMultiLine" />
+        <Button
+            android:id="@+id/btnPickApps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📱 설치된 앱에서 선택" />
         <EditText
             android:id="@+id/etLimit"
             android:layout_width="match_parent"

@@ -68,6 +68,10 @@ object ApiClient {
         val client = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(log)
+            // Render 무료 플랜 콜드스타트(50초+) 대응
+            .connectTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder()
             .baseUrl(AuthManager.getBaseUrl(ctx))
