@@ -255,6 +255,8 @@ class MainActivity : AppCompatActivity() {
         class VH(v: View) : RecyclerView.ViewHolder(v) {
             val tvName: TextView = v.findViewById(R.id.tvName)
             val tvDetail: TextView = v.findViewById(R.id.tvDetail)
+            val tvGauge: TextView = v.findViewById(R.id.tvGauge)
+            val pbGauge: ProgressBar = v.findViewById(R.id.pbGauge)
             val btnToggle: Button = v.findViewById(R.id.btnToggle)
             val btnEdit: Button = v.findViewById(R.id.btnEdit)
             val btnDelete: Button = v.findViewById(R.id.btnDelete)
@@ -274,6 +276,11 @@ class MainActivity : AppCompatActivity() {
             val s = items[pos]
             h.tvName.text = "${if (s.isActive) "🟢" else "⚪"} ${s.name}"
             h.tvDetail.text = describe(s)
+            // 게이지: 시간대는 시작까지/종료까지, 사용량은 남은 분
+            val usedSec = BlockEngine.usedSecondsFor(h.itemView.context, s)
+            val g = BlockEngine.gaugeFor(s, usedSec)
+            h.tvGauge.text = g.text
+            h.pbGauge.progress = g.progress
             h.btnToggle.text = if (s.isActive) "끄기" else "켜기"
             h.btnToggle.setOnClickListener { onToggle(s) }
             h.btnEdit.setOnClickListener { onEdit(s) }

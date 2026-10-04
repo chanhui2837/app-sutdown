@@ -24,6 +24,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp" />
         <TextView
+            android:id="@+id/tvGauge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textStyle="bold" />
+        <ProgressBar
+            android:id="@+id/pbGauge"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progress="0" />
+        <TextView
             android:id="@+id/tvPending"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

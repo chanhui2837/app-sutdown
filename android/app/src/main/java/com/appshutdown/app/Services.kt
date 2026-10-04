@@ -16,9 +16,26 @@ import kotlinx.coroutines.withContext
 
 /** 부팅 후 + 앱 실행 시 차단 감시 포그라운드 서비스 시작용 */
 class BlockMonitorService : Service() {
+    private val pollSec = 30L
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val tick = object : Runnable {
+        override fun run() {
+            try { tickOnce() } catch (_: Exception) {}
+            handler.postDelayed(this, pollSec * 1000L)
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         startFg()
+        // 30초마다: 포그라운드 앱 사용량 누적 + 차단 판정
+        // (앱 안에 계속 머물러도 시간이 차면 차단 화면이 뜬다)
+        handler.postDelayed(tick, pollSec * 1000L)
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(tick)
+        super.onDestroy()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -42,6 +59,41 @@ class BlockMonitorService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun tickOnce() {
+        val fg = foregroundPackage() ?: return
+        if (fg == packageName || fg == "com.android.systemui") return
+        // 30초 사용 누적 (초 단위, 날짜별 키)
+        BlockEngine.addUsageSeconds(this, fg, pollSec.toInt())
+        val hit = BlockEngine.findBlockingSchedule(this, BlockEngine.loadCachedSchedules(this), fg)
+            ?: return
+        startActivity(Intent(this, BlockedScreenActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            putExtra("pkg", fg)
+            putExtra("scheduleName", hit.name)
+            putExtra("scheduleType", hit.type)
+        })
+    }
+
+    /** 사용 정보 접근 권한으로 현재 포그라운드 앱 조회 */
+    private fun foregroundPackage(): String? {
+        return try {
+            val usm = getSystemService(Context.USAGE_STATS_SERVICE) as android.app.usage.UsageStatsManager
+            val now = System.currentTimeMillis()
+            val events = usm.queryEvents(now - 120_000, now)
+            var last: String? = null
+            val e = android.app.usage.UsageEvents.Event()
+            while (events.hasNextEvent()) {
+                events.getNextEvent(e)
+                if (e.eventType == android.app.usage.UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                    last = e.packageName
+                }
+            }
+            last
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     private fun startFg() {
         val chId = "block_monitor"
