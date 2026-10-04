@@ -73,8 +73,11 @@ object BlockEngine {
             when (s.type) {
                 "DAILY_LIMIT" -> {
                     if (!s.blockedApps.contains(foregroundPkg)) continue
-                    val used = getTodayUsageMinutes(ctx, foregroundPkg)
-                    if (used >= s.dailyLimitMinutes) return s
+                    // 합산 사용량: 일정에 속한 모든 앱의 오늘 사용량 합이
+                    // dailyLimitMinutes를 넘으면 일정 전체 앱을 전부 차단
+                    // (예: 60분 일정에 인스타+유튜브 → 합쳐서 60분 쓰면 둘 다 차단)
+                    val total = s.blockedApps.sumOf { getTodayUsageMinutes(ctx, it) }
+                    if (total >= s.dailyLimitMinutes) return s
                 }
                 "TIME_WINDOW", "ALWAYS", "QUICK" -> {
                     if (s.allowlistMode) {

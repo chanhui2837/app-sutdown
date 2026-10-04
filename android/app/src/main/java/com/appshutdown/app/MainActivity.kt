@@ -95,7 +95,22 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
 
         btnAdd.setOnClickListener {
-            startActivity(Intent(this, AddEditScheduleActivity::class.java))
+            AlertDialog.Builder(this)
+                .setTitle("일정 종류 선택")
+                .setItems(
+                    arrayOf(
+                        "🕙 시간대 차단 (예: 매일 22:00~07:00)",
+                        "⏳ 사용량 차단 (고른 앱 합산 N분 쓰면 전부 차단)"
+                    )
+                ) { _, which ->
+                    val preset = if (which == 0) "TIME_WINDOW" else "DAILY_LIMIT"
+                    startActivity(
+                        Intent(this, AddEditScheduleActivity::class.java).apply {
+                            putExtra("presetType", preset)
+                        }
+                    )
+                }
+                .show()
         }
         btnRefresh.setOnClickListener { load(tvStatus) }
         btnQuick.setOnClickListener {
@@ -292,7 +307,7 @@ class MainActivity : AppCompatActivity() {
                 if (s.blockedApps.size > 3) " 외 ${s.blockedApps.size - 3}개" else ""
             val mode = if (s.allowlistMode) "[허용목록외 전부차단] " else ""
             return when (s.type) {
-                "DAILY_LIMIT" -> "${mode}하루 ${s.dailyLimitMinutes}분 쓰면 차단 | $apps"
+                "DAILY_LIMIT" -> "선택 앱 합산 하루 ${s.dailyLimitMinutes}분 쓰면 전부 차단 | $apps"
                 "TIME_WINDOW" -> {
                     val d = if (s.days.isEmpty()) "매일" else "요일:" + s.days.sorted().joinToString(",")
                     "$mode${s.startTime}~${s.endTime} ($d) | $apps"

@@ -14,6 +14,31 @@ import kotlinx.coroutines.withContext
 class AddEditScheduleActivity : AppCompatActivity() {
 
     private var editId: String? = null
+    // 일정 추가 시 종류가 정해져서 넘어옴 (TIME_WINDOW / DAILY_LIMIT)
+    private var fixedType: String? = null
+
+    private fun updateFieldVisibility(type: String) {
+        val rowTime: android.view.View = findViewById(R.id.rowTime)
+        val etDays: EditText = findViewById(R.id.etDays)
+        val etLimit: EditText = findViewById(R.id.etLimit)
+        when (type) {
+            "TIME_WINDOW" -> {
+                rowTime.visibility = android.view.View.VISIBLE
+                etDays.visibility = android.view.View.VISIBLE
+                etLimit.visibility = android.view.View.GONE
+            }
+            "DAILY_LIMIT" -> {
+                rowTime.visibility = android.view.View.GONE
+                etDays.visibility = android.view.View.GONE
+                etLimit.visibility = android.view.View.VISIBLE
+            }
+            else -> {
+                rowTime.visibility = android.view.View.VISIBLE
+                etDays.visibility = android.view.View.VISIBLE
+                etLimit.visibility = android.view.View.VISIBLE
+            }
+        }
+    }
 
     private val pickApps = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         if (res.resultCode == Activity.RESULT_OK) {
@@ -32,6 +57,7 @@ class AddEditScheduleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_edit_schedule)
 
         editId = intent.getStringExtra("editId")
+        fixedType = intent.getStringExtra("presetType")
 
         val etName: EditText = findViewById(R.id.etName)
         val spinnerType: Spinner = findViewById(R.id.spinnerType)
@@ -56,8 +82,26 @@ class AddEditScheduleActivity : AppCompatActivity() {
         val tvError: TextView = findViewById(R.id.tvError)
 
         val types = arrayOf("TIME_WINDOW", "DAILY_LIMIT", "ALWAYS", "QUICK")
-        val labels = arrayOf("시간대 차단 (예: 22:00~07:00)", "하루 사용량 (예: 60분 쓰면 차단)", "항상 차단", "즉시 차단(Quick Block)")
+        val labels = arrayOf("시간대 차단 (예: 22:00~07:00)", "사용량 차단 (고른 앱 합산 N분 쓰면 전부 차단)", "항상 차단", "즉시 차단(Quick Block)")
         spinnerType.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
+
+        // 추가 모드(종류 선택 후 진입): 종류 고정 + 해당 종류에 맞는 입력칸만 표시
+        if (fixedType != null) {
+            spinnerType.visibility = android.view.View.GONE
+            val tvTypeFixed: TextView = findViewById(R.id.tvTypeFixed)
+            tvTypeFixed.visibility = android.view.View.VISIBLE
+            tvTypeFixed.text = if (fixedType == "TIME_WINDOW") "🕙 시간대 차단" else "⏳ 사용량 차단"
+            title = if (fixedType == "TIME_WINDOW") "시간대 차단 추가" else "사용량 차단 추가"
+            updateFieldVisibility(fixedType!!)
+        } else {
+            // 수정 모드: 종류 변경 시 입력칸 전환
+            spinnerType.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p: android.widget.AdapterView<*>?, v: android.view.View?, pos: Int, id: Long) {
+                    updateFieldVisibility(types[pos])
+                }
+                override fun onNothingSelected(p: android.widget.AdapterView<*>?) {}
+            }
+        }
 
         // 수정 모드면 기존 값 로드
         if (editId != null) {
@@ -76,17 +120,18 @@ class AddEditScheduleActivity : AppCompatActivity() {
                         etDays.setText(if (s.days.isEmpty()) "" else s.days.sorted().joinToString(","))
                         switchActive.isChecked = s.isActive
                         switchAllow.isChecked = s.allowlistMode
+                        updateFieldVisibility(s.type)
                     }
                 } catch (_: Exception) {}
             }
         }
 
         btnSave.setOnClickListener {
-            val type = types[spinnerType.selectedItemPosition]
+            val type = fixedType ?: types[spinnerType.selectedItemPosition]
             val apps = etApps.text.toString()
                 .split(",", "\n", " ", ";")
                 .map { it.trim() }.filter { it.isNotEmpty() }
-            if (apps.isEmpty()) { tvError.text = "차단할 앱 패키지명 1개 이상 입력 (예: com.instagram.android)"; return@setOnClickListener }
+            if (apps.isEmpty()) { tvError.text = "차단할 앱 1개 이상 필요 ('설치된 앱에서 선택' 버튼 이용)"; return@setOnClickListener }
             val days = etDays.text.toString().split(",")
                 .mapNotNull { it.trim().toIntOrNull() }.filter { it in 1..7 }.distinct()
 
