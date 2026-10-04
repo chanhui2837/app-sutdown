@@ -19,7 +19,7 @@ object BlockEngine {
     fun todayKey(): String = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
 
     fun isScheduleActiveNow(s: Schedule, now: LocalTime = LocalTime.now(), dayOfWeek: Int = LocalDate.now().dayOfWeek.value): Boolean {
-        if (!s.isActive) return false
+        // 끄기 기능 없음: 일정은 항상 켜져 있음
         // 삭제 대기 중이어도 쿨다운이 끝나기 전에는 차단 유지 (우회 방지)
         return when (s.type) {
             "ALWAYS", "QUICK" -> true
@@ -128,7 +128,6 @@ object BlockEngine {
         now: LocalTime = LocalTime.now(),
         dayOfWeek: Int = LocalDate.now().dayOfWeek.value
     ): Gauge {
-        if (!s.isActive) return Gauge("꺼짐", 0)
         return when (s.type) {
             "DAILY_LIMIT" -> {
                 val total = s.dailyLimitMinutes * 60L

@@ -15,7 +15,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="차단 방식" />
+            android:layout_marginTop="8dp"
+            android:text="차단 방식"
+            android:textStyle="bold" />
         <Spinner
             android:id="@+id/spinnerType"
             android:layout_width="match_parent"
@@ -27,18 +29,22 @@
             android:textSize="17sp"
             android:textStyle="bold"
             android:visibility="gone" />
-        <EditText
-            android:id="@+id/etApps"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="차단할 앱"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvPickedApps"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:gravity="top"
-            android:hint="차단 앱 패키지명 (줄바꿈/콤마 구분)&#10;예:&#10;com.instagram.android&#10;com.google.android.youtube&#10;com.zhiliaoapp.musically"
-            android:inputType="textMultiLine" />
+            android:layout_height="wrap_content"
+            android:text="(선택된 앱 없음)" />
         <Button
             android:id="@+id/btnPickApps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📱 설치된 앱에서 선택" />
+            android:text="📱 앱 선택" />
         <EditText
             android:id="@+id/etLimit"
             android:layout_width="match_parent"
@@ -50,24 +56,105 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <EditText
-                android:id="@+id/etStart"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="시작 22:00" />
-            <EditText
-                android:id="@+id/etEnd"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="시작" />
+                <Spinner
+                    android:id="@+id/spinnerStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="종료 07:00" />
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="종료" />
+                <Spinner
+                    android:id="@+id/spinnerEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
-        <EditText
-            android:id="@+id/etDays"
+        <LinearLayout
+            android:id="@+id/rowDays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="요일 1(월)~7(일), 비우면 매일 (예: 1,2,3,4,5)" />
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="요일"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/cbAll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="매일" />
+                <CheckBox
+                    android:id="@+id/cbD1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="월" />
+                <CheckBox
+                    android:id="@+id/cbD2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="화" />
+                <CheckBox
+                    android:id="@+id/cbD3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="수" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/cbD4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="목" />
+                <CheckBox
+                    android:id="@+id/cbD5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="금" />
+                <CheckBox
+                    android:id="@+id/cbD6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="토" />
+                <CheckBox
+                    android:id="@+id/cbD7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="일" />
+            </LinearLayout>
+        </LinearLayout>
         <Switch
             android:id="@+id/switchActive"
             android:layout_width="wrap_content"

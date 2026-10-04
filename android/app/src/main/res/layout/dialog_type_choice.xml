@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="어떤 일정을 만들까요?"
+        android:textSize="19sp"
+        android:textStyle="bold" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTypeTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="🕙 시간대 차단&#10;매일 밤 10시~아침 7시처럼 정한 시간에 차단"
+        android:textSize="15sp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTypeUsage"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:padding="16dp"
+        android:text="⏳ 사용량 차단&#10;고른 앱들을 합쳐서 N분 쓰면 전부 차단"
+        android:textSize="15sp" />
+</LinearLayout>

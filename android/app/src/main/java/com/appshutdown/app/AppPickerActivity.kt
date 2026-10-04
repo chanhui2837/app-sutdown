@@ -50,7 +50,14 @@ class AppPickerActivity : AppCompatActivity() {
         })
 
         btnDone.setOnClickListener {
-            setResult(RESULT_OK, Intent().putStringArrayListExtra("picked", ArrayList(selected)))
+            val pkgs = ArrayList(selected)
+            val labels = ArrayList(pkgs.map { p -> all.find { it.pkg == p }?.label ?: p })
+            setResult(
+                RESULT_OK,
+                Intent()
+                    .putStringArrayListExtra("picked", pkgs)
+                    .putStringArrayListExtra("pickedLabels", labels)
+            )
             finish()
         }
     }

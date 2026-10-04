@@ -294,6 +294,14 @@ app.post("/api/schedules/:id/confirm-delete", needDB, auth, async (req, res) => 
   res.json({ ok: true });
 });
 
+// 즉시 삭제 (엄격모드 OFF일 때 앱에서 사용)
+app.delete("/api/schedules/:id", needDB, auth, async (req, res) => {
+  const s = await Schedule.findOne({ _id: req.params.id, userId: req.me.uid });
+  if (!s) return res.status(404).json({ error: "일정 없음" });
+  await Schedule.deleteOne({ _id: s._id });
+  res.json({ ok: true });
+});
+
 // 사용량 보고 (안드로이드가 주기적으로 전송: {dateKey, usages:[{packageName, minutes}]})
 app.post("/api/usage/report", needDB, auth, async (req, res) => {
   try {

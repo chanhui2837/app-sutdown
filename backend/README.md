@@ -26,13 +26,12 @@ node server.js
   - type: `DAILY_LIMIT` | `TIME_WINDOW` | `ALWAYS` | `QUICK`
   - TIME_WINDOW 예: `{startTime:"22:00", endTime:"07:00", days:[]}` → 매일 밤 10시~아침 7시
 - `PUT /api/schedules/:id` — 수정
-- `POST /api/schedules/:id/toggle` — on/off
-- `POST /api/schedules/:id/request-delete` — 삭제 요청 (10분 대기 시작, 실제 삭제 아님)
-- `POST /api/schedules/:id/confirm-delete` — 10분 지난 후 호출해야 진짜 삭제
-- `POST /api/schedules/:id/cancel-delete` — 대기 취소
+- `POST /api/schedules/:id/toggle` — on/off (앱에서 미사용)
+- `DELETE /api/schedules/:id` — 즉시 삭제 (엄격모드 OFF일 때 앱에서 호출)
 - `POST /api/usage/report {dateKey:"YYYY-MM-DD", usages:[{packageName, minutes}]}`
 
-## 4. 삭제 10분 규칙 (핵심)
-서버가 `pendingDeleteAt`을 기록하고, `confirm-delete`에서
-`Date.now() - pendingDeleteAt >= 10분`을 검사합니다.
-앱을 지우고 재설치해도 서버에 남아있어 우회가 어렵습니다.
+## 4. 삭제와 엄격모드
+- 삭제는 기본 즉시 삭제(`DELETE /api/schedules/:id`)
+- 엄격모드는 앱(단말) 단위 기능: 켜지면 앱에서 삭제 버튼이 막히고,
+  끄려면 10분 기다리기를 눌러 10분이 지나야 자동 해제
+- (구버전 request/confirm/cancel-delete API는 호환용으로 남아 있음)

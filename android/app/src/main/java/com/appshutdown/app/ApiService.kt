@@ -22,17 +22,9 @@ interface ApiService {
         @Body b: Map<String, @JvmSuppressWildcards Any>
     ): Response<ScheduleRes>
 
-    @POST("api/schedules/{id}/toggle")
-    suspend fun toggleSchedule(@Path("id") id: String): Response<ScheduleRes>
-
-    @POST("api/schedules/{id}/request-delete")
-    suspend fun requestDelete(@Path("id") id: String): Response<ScheduleRes>
-
-    @POST("api/schedules/{id}/cancel-delete")
-    suspend fun cancelDelete(@Path("id") id: String): Response<ScheduleRes>
-
-    @POST("api/schedules/{id}/confirm-delete")
-    suspend fun confirmDelete(@Path("id") id: String): Response<OkRes>
+    // 즉시 삭제 (엄격모드 OFF일 때만 앱에서 호출)
+    @DELETE("api/schedules/{id}")
+    suspend fun deleteSchedule(@Path("id") id: String): Response<OkRes>
 
     @POST("api/usage/report")
     suspend fun reportUsage(@Body b: UsageReportReq): Response<OkRes>

@@ -70,6 +70,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="⚡ 즉시 차단 (Quick Block)" />
+    <Button
+        android:id="@+id/btnStrict"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="🔓 엄격모드 켜기" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSchedules"
         android:layout_width="match_parent"

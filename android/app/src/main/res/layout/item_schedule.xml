@@ -37,24 +37,11 @@
             android:layout_marginTop="4dp"
             android:max="100"
             android:progress="0" />
-        <TextView
-            android:id="@+id/tvPending"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/brand_red_dark"
-            android:textStyle="bold"
-            android:visibility="gone" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="horizontal">
-            <Button
-                android:id="@+id/btnToggle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="끄기" />
             <Button
                 android:id="@+id/btnEdit"
                 android:layout_width="0dp"
@@ -67,20 +54,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="삭제" />
-            <Button
-                android:id="@+id/btnConfirmDelete"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="확정"
-                android:visibility="gone" />
-            <Button
-                android:id="@+id/btnCancelDelete"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="취소"
-                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

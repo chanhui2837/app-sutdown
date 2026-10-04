@@ -35,5 +35,6 @@ app sutdown/
 - [x] 시간대 차단 (예: 22:00~07:00, 자정 넘김·요일 선택) (TIME_WINDOW)
 - [x] 조건 없이 차단 (ALWAYS) + 원터치 즉시 차단 (QUICK)
 - [x] 일정 원하는 만큼 추가
-- [x] 삭제 버튼 → 10분 대기 → 확정 삭제 (대기 중 차단 유지, 취소 가능)
+- [x] 삭제 버튼 → 확인 후 즉시 삭제 (끄기 버튼 없음)
+- [x] 엄격모드: 켜지면 삭제 불가, 끄려면 10분 기다리기 후 자동 해제
 - [x] AppBlock식 Strict Mode/Cooldown, Allowlist, Quick Block, 스케줄, 사용량 리포트
