@@ -16,6 +16,20 @@ import java.time.format.DateTimeFormatter
 object BlockEngine {
     private val TF: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
+    /** 홈/전화/문자/설정 등 절대 차단하면 안 되는 필수 패키지 */
+    val DEFAULT_ALLOWED: Set<String> = setOf(
+        "com.android.launcher", "com.android.launcher3",
+        "com.google.android.apps.nexuslauncher",
+        "com.android.systemui",
+        "com.android.dialer", "com.android.incallui", "com.android.server.telecom",
+        "com.google.android.dialer",
+        "com.android.contacts", "com.android.contactsapp",
+        "com.google.android.contacts",
+        "com.android.mms", "com.android.messaging",
+        "com.android.settings",
+        "com.android.phone"
+    )
+
     fun todayKey(): String = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
 
     fun isScheduleActiveNow(s: Schedule, now: LocalTime = LocalTime.now(), dayOfWeek: Int = LocalDate.now().dayOfWeek.value): Boolean {
@@ -67,6 +81,7 @@ object BlockEngine {
         foregroundPkg: String
     ): Schedule? {
         if (foregroundPkg == ctx.packageName) return null // 자기 자신은 차단 안 함
+        if (DEFAULT_ALLOWED.contains(foregroundPkg)) return null // 필수 앱은 절대 차단 안 함
         for (s in schedules) {
             if (!isScheduleActiveNow(s)) continue
             when (s.type) {

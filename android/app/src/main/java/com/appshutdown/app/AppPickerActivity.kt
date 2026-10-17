@@ -67,6 +67,7 @@ class AppPickerActivity : AppCompatActivity() {
         val list = pm.getInstalledApplications(PackageManager.GET_META_DATA)
             .filter { pm.getLaunchIntentForPackage(it.packageName) != null }
             .filter { it.packageName != packageName }
+            .filter { !BlockEngine.DEFAULT_ALLOWED.contains(it.packageName) }
             .map { ai ->
                 AppInfo(
                     pm.getApplicationLabel(ai)?.toString() ?: ai.packageName,

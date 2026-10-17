@@ -20,7 +20,7 @@ class BlockAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val pkg = event.packageName?.toString() ?: return
-        if (pkg == packageName || pkg == "com.android.systemui") return
+        if (pkg == packageName || BlockEngine.DEFAULT_ALLOWED.contains(pkg)) return
 
         // 너무 잦은 이벤트 스로틀 (500ms)
         val now = System.currentTimeMillis()

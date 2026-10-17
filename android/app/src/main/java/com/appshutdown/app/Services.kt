@@ -62,7 +62,7 @@ class BlockMonitorService : Service() {
 
     private fun tickOnce() {
         val fg = foregroundPackage() ?: return
-        if (fg == packageName || fg == "com.android.systemui") return
+        if (fg == packageName || BlockEngine.DEFAULT_ALLOWED.contains(fg)) return
         // 30초 사용 누적 (초 단위, 날짜별 키)
         BlockEngine.addUsageSeconds(this, fg, pollSec.toInt())
         val hit = BlockEngine.findBlockingSchedule(this, BlockEngine.loadCachedSchedules(this), fg)
