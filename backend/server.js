@@ -314,7 +314,7 @@ app.post("/api/usage/report", needDB, auth, async (req, res) => {
       const m = Math.max(0, Number(u.minutes) || 0);
       await Usage.findOneAndUpdate(
         { userId: req.me.uid, packageName: String(u.packageName), dateKey },
-        { $set: { minutes: m } },
+        { $inc: { minutes: m }, $setOnInsert: { userId: req.me.uid, packageName: String(u.packageName), dateKey, minutes: 0 } },
         { upsert: true }
       );
     }
